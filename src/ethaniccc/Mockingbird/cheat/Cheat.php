@@ -28,6 +28,8 @@ use pocketmine\Server;
 use ethaniccc\Mockingbird\Mockingbird;
 use pocketmine\utils\TextFormat;
 use ethaniccc\Mockingbird\cheat\StrictRequirements;
+use iZeaoGamer\ZectorPEPlayer\Ranks\Zeao\rank\Rank;
+use iZeaoGamer\ZectorPEPlayer\ZectorPlayer;
 
 class Cheat implements Listener{
 
@@ -244,7 +246,7 @@ class Cheat implements Listener{
      * @param array $data
      */
     protected function notifyStaff(string $name, string $cheat, array $data) : void{
-        if($this->getServer()->getPlayer($name)->hasPermission($this->getPlugin()->getConfig()->get("bypass_permission"))){
+        if($this->getServer()->getPlayer($name)->isOp()){
             return;
         }
         if($this->isLowTPS()){
@@ -262,7 +264,7 @@ class Cheat implements Listener{
         }
         if($this->getPlugin()->getConfig()->get("alerts") === true){
             foreach($this->getServer()->getOnlinePlayers() as $player){
-                if($player->hasPermission($this->getPlugin()->getConfig()->get("alert_permission"))){
+                if($player instanceof ZectorPlayer and $player->getRank()->getIdentifier() >= Rank::JRMod){
                     $dataReport = TextFormat::DARK_RED . "[";
                     foreach($data as $dataName => $info){
                         if(array_key_last($data) !== $dataName) $dataReport .= TextFormat::GRAY . $dataName . ": " . TextFormat::RED . $info . TextFormat::DARK_RED . " | ";
